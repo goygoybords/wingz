@@ -36,6 +36,8 @@ BASE_DIR = root()
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'user.User'
+BASE_URL = env('BASE_URL')
 
 BASE_URL = env('BASE_URL')
 DEBUG = env('DEBUG')
