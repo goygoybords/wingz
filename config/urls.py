@@ -6,7 +6,9 @@ from django.conf import settings
 from config.views import home
 
 urlpatterns = [
-    path('', home),  # 👈 set root route to home
+    path('admin/', admin.site.urls),
+    
+    path('users/', include('apps.user.urls')),
 ]
 
 if settings.DEBUG:

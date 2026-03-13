@@ -51,12 +51,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # 3rd-party apps
-    'rest_framework',
-    'rest_framework_simplejwt.token_blacklist',
-    'debug_toolbar',
-
-    #local apps - to display apps
+    #local apps
+    'apps.user',
+    'apps.ride'
 ]
 
 MIDDLEWARE = [
