@@ -1,6 +1,5 @@
-from django.http import HttpResponse
-from django.views import View
+from rest_framework_simplejwt.views import TokenObtainPairView
+from apps.user.serializers import CustomTokenObtainPairSerializer
 
-class LoginPage(View):
-    def get(self, request):
-        return HttpResponse("Hello, world!")
+class LoginAPIView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
