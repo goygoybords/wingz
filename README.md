@@ -155,3 +155,35 @@ You can test the API using the provided Postman collection and environment files
 3. Use the **Login** request to authenticate. It will automatically save the JWT access and refresh tokens as environment variables.
 
 4. All authorized requests (e.g., User, Ride, RideEvent APIs) will use the saved `{{access_token}}` for the `Authorization` header.
+
+## 📊 SQL Report: Count of Trips > 1 Hour (by Month and Driver)
+
+The following raw SQL query returns the number of trips that took more than 1 hour, grouped by driver and by month:
+
+```sql
+WITH dropoff_events AS (
+    SELECT id_ride_id, MAX(created_at) AS dropoff_time
+    FROM ride_rideevent
+    WHERE description ILIKE 'Status changed to dropoff'
+    GROUP BY id_ride_id
+),
+ride_durations AS (
+    SELECT
+        r.id_ride,
+        r.id_driver_id,
+        r.pickup_time,
+        de.dropoff_time,
+        (de.dropoff_time - r.pickup_time) AS duration
+    FROM dropoff_events de
+    JOIN ride_ride r ON r.id_ride = de.id_ride_id
+    WHERE (de.dropoff_time - r.pickup_time) > INTERVAL '1 hour'
+)
+SELECT
+    TO_CHAR(rd.pickup_time, 'YYYY-MM') AS month,
+    uu.first_name || ' ' || uu.last_name AS driver,
+    COUNT(*) AS "Count of Trips > 1 hr"
+FROM ride_durations rd
+JOIN user_user uu ON uu.id = rd.id_driver_id
+GROUP BY month, driver
+ORDER BY month, driver;
+```

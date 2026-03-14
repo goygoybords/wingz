@@ -1,13 +1,13 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from random import choice, uniform
+from random import choice, uniform, randint
 from datetime import timedelta
 
 from apps.ride.models import Ride, RideEvent
 from apps.user.models import User
 
 class Command(BaseCommand):
-    help = 'Seed 1000 rides across the last 5 days'
+    help = 'Seed 1000 rides across the last 5 days (some with > 1hr duration)'
 
     def handle(self, *args, **options):
         riders = User.objects.filter(user_type__name='Rider')
@@ -23,7 +23,7 @@ class Command(BaseCommand):
             for _ in range(200):
                 rider = choice(riders)
                 driver = choice(drivers)
-                pickup_time = group_time - timedelta(minutes=choice(range(10, 60)))
+                pickup_time = group_time - timedelta(minutes=randint(10, 60))
 
                 ride = Ride.objects.create(
                     status=choice(['pickup', 'en-route', 'dropoff']),
@@ -41,10 +41,18 @@ class Command(BaseCommand):
                     description='Status changed to pickup',
                     created_at=pickup_time
                 )
+
+                # 50% of dropoffs over 1 hour, 50% under
+                if randint(0, 1):
+                    dropoff_time = pickup_time + timedelta(minutes=randint(61, 120))  # > 1 hour
+                    self.stdout.write(self.style.WARNING(f"⏱ Ride {ride.id_ride} has dropoff > 1 hour"))
+                else:
+                    dropoff_time = pickup_time + timedelta(minutes=randint(10, 50))   # < 1 hour
+
                 RideEvent.objects.create(
                     id_ride=ride,
                     description='Status changed to dropoff',
-                    created_at=pickup_time + timedelta(minutes=choice(range(10, 90)))
+                    created_at=dropoff_time
                 )
                 total += 1
 
