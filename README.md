@@ -58,8 +58,16 @@ pip install -r requirements.txt
 
 ```bash
 python manage.py migrate
+
+6. **Run the seeder files to seed data**
+
+```bash
+python manage.py seed_usertypes
+
+python manage.py seed_admin_user
 ```
-6. **Run the development server**
+
+7. **Run the development server**
 
 ```bash
 python manage.py runserver
