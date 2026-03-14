@@ -3,10 +3,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import FloatField
+from django.db.models import FloatField, Prefetch
 from django.db.models.expressions import RawSQL
+from django.utils import timezone
+from datetime import timedelta
 
-from apps.ride.models import Ride
+from apps.ride.models import Ride, RideEvent
 from apps.ride.serializers import RideSerializer
 from apps.ride.filters import RideFilter
 from apps.user.permissions import IsAdminRole
@@ -22,10 +24,17 @@ class RideViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        Dynamically builds the Ride queryset with related users, events,
+        Dynamically builds the Ride queryset with related users, ride events (24h only),
         and optional distance-to-pickup annotation for sorting.
         """
-        queryset = Ride.objects.select_related('id_rider', 'id_driver').prefetch_related('ride_events')
+        queryset = Ride.objects.select_related('id_rider', 'id_driver')
+       
+        yesterday = timezone.now() - timedelta(days=1)
+        recent_events = RideEvent.objects.filter(created_at__gte=yesterday)
+
+        queryset = queryset.prefetch_related(
+            Prefetch('ride_events', queryset=recent_events, to_attr='todays_events_cache')
+        )
 
         lat = self.request.query_params.get('lat')
         lng = self.request.query_params.get('lng')

@@ -1,4 +1,7 @@
 from rest_framework import serializers
+from datetime import timedelta
+from django.utils import timezone
+
 from apps.ride.models import Ride, RideEvent
 from apps.user.models import User
 from apps.user.serializers import UserDisplaySerializer
@@ -24,6 +27,7 @@ class RideSerializer(serializers.ModelSerializer):
     )
 
     ride_events = RideEventSerializer(many=True, write_only=True)
+    todays_ride_events = serializers.SerializerMethodField()
 
     class Meta:
         model = Ride
@@ -39,9 +43,20 @@ class RideSerializer(serializers.ModelSerializer):
             'id_driver',
             'id_rider_id',
             'id_driver_id',
-            'ride_events'
+            'ride_events',
+            'todays_ride_events'
         ]
         read_only_fields = ['id_ride', 'id_rider', 'id_driver']
+
+    def get_todays_ride_events(self, ride):
+        if hasattr(ride, 'todays_events_cache'):
+            events = ride.todays_events_cache
+        else:
+            now = timezone.now()
+            yesterday = now - timedelta(days=1)
+            events = ride.ride_events.filter(created_at__gte=yesterday)
+
+        return RideEventSerializer(events, many=True).data
 
     def create(self, validated_data):
         ride_events_data = validated_data.pop('ride_events', [])
