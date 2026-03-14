@@ -52,3 +52,17 @@ class RideSerializer(serializers.ModelSerializer):
 
         return ride
 
+    def update(self, instance, validated_data):
+        ride_events_data = validated_data.pop('ride_events', [])
+
+        # Update ride fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Replace ride events
+        instance.ride_events.all().delete()
+        for event_data in ride_events_data:
+            RideEvent.objects.create(id_ride=instance, **event_data)
+
+        return instance
