@@ -37,6 +37,7 @@ BASE_DIR = root()
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'user.User'
+LOGIN_REDIRECT_URL = '/'
 BASE_URL = env('BASE_URL')
 DEBUG = env('DEBUG')
 PAGE_SIZE = env.int("PAGE_SIZE", default=10)
@@ -138,6 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',

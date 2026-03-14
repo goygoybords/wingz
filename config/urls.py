@@ -11,6 +11,8 @@ urlpatterns = [
     path('api/ride/', include('apps.ride.urls')),
 ]
 
+urlpatterns += [path('api-auth/', include('rest_framework.urls'))]
+
 if settings.DEBUG:
     from django.contrib import admin
     urlpatterns.append(path('admin/', admin.site.urls))
