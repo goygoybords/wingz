@@ -18,6 +18,22 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdminRole]
 
+    def create(self, request, *args, **kwargs):
+        super().create(request, *args, **kwargs)
+        return Response({"message": "User created successfully."}, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        super().update(request, *args, **kwargs)
+        return Response({"message": "User updated successfully."}, status=status.HTTP_200_OK)
+
+    def partial_update(self, request, *args, **kwargs):
+        super().partial_update(request, *args, **kwargs)
+        return Response({"message": "User partially updated successfully."}, status=status.HTTP_200_OK)
+
+    def destroy(self, request, *args, **kwargs):
+        super().destroy(request, *args, **kwargs)
+        return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 

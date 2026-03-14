@@ -7,8 +7,8 @@ from config.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
-    path('api/user/', include('apps.user.urls')), 
+    path('api/user/', include('apps.user.urls')),
+    path('api/ride/', include('apps.ride.urls')),
 ]
 
 if settings.DEBUG:
