@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Python/Django Developer Test – Kevin Kho</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1.name {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        table, th, td {
+            border: 1px solid #bdc3c7;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #ecf0f1;
+        }
+        code {
+            background-color: #ecf0f1;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="name">Developer: Kevin Sean Kho</h1>
+    <h1>Python/Django Developer Test</h1>
+
+    <h2>Objective</h2>
+    <p>Create a RESTful API using Django REST Framework for managing ride information.</p>
+
+    <h2>Core Requirements</h2>
+    <ol>
+        <li>
+            <strong>Utilize Django REST Framework</strong>
+            <ul>
+                <li>Create necessary models for <code>Ride</code>, <code>User</code>, and <code>RideEvent</code>.</li>
+                <li>Implement serializers for the models to enable JSON serialization/deserialization.</li>
+                <li>Use Viewsets for managing CRUD operations.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Authentication</strong>
+            <ul>
+                <li>Implement authentication to ensure only users with the role <code>'admin'</code> can access the API.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Ride List API</strong>
+            <ul>
+                <li>Implement an API which returns a list of Rides</li>
+                <li>Each Ride should include related RideEvents and Users (<code>id_rider</code>, <code>id_driver</code>)</li>
+                <li>Support pagination</li>
+                <li>Support filtering Ride status, Rider email</li>
+                <li>Support for sorting by <code>pickup_time</code> and distance to pickup given a GPS position</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Performance</strong>
+            <ul>
+                <li>Add a field named <code>todays_ride_events</code> on Ride which only includes RideEvents from the last 24 hours.</li>
+                <li>Minimize SQL queries (max 2-3 queries for full ride list including relations and pagination).</li>
+                <li>Use advanced Django features to retrieve related data efficiently.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Table Definitions</strong>
+        </li>
+    </ol>
+
+    <h3>Ride Table</h3>
+    <table>
+        <tr><th>Field</th><th>Data Type</th><th>Description</th></tr>
+        <tr><td>id_ride</td><td>INT</td><td>Primary key</td></tr>
+        <tr><td>status</td><td>VARCHAR</td><td>Ride status (e.g., 'en-route', 'pickup', 'dropoff')</td></tr>
+        <tr><td>id_rider</td><td>INT</td><td>Foreign key referencing User(id_user)</td></tr>
+        <tr><td>id_driver</td><td>INT</td><td>Foreign key referencing User(id_user)</td></tr>
+        <tr><td>pickup_latitude</td><td>FLOAT</td><td>Latitude of pickup location</td></tr>
+        <tr><td>pickup_longitude</td><td>FLOAT</td><td>Longitude of pickup location</td></tr>
+        <tr><td>dropoff_latitude</td><td>FLOAT</td><td>Latitude of dropoff location</td></tr>
+        <tr><td>dropoff_longitude</td><td>FLOAT</td><td>Longitude of dropoff location</td></tr>
+        <tr><td>pickup_time</td><td>DATETIME</td><td>Pickup time</td></tr>
+    </table>
+
+    <h3>User Table</h3>
+    <table>
+        <tr><th>Field</th><th>Data Type</th><th>Description</th></tr>
+        <tr><td>id_user</td><td>INT</td><td>Primary key</td></tr>
+        <tr><td>role</td><td>VARCHAR</td><td>User role ('admin' or other roles)</td></tr>
+        <tr><td>first_name</td><td>VARCHAR</td><td>User’s first name</td></tr>
+        <tr><td>last_name</td><td>VARCHAR</td><td>User’s last name</td></tr>
+        <tr><td>email</td><td>VARCHAR</td><td>User’s email address</td></tr>
+        <tr><td>phone_number</td><td>VARCHAR</td><td>User’s phone number</td></tr>
+    </table>
+
+    <h3>Ride_Event Table</h3>
+    <table>
+        <tr><th>Field</th><th>Data Type</th><th>Description</th></tr>
+        <tr><td>id_ride_event</td><td>INT</td><td>Primary key</td></tr>
+        <tr><td>id_ride</td><td>INT</td><td>Foreign key referencing Ride(id_ride)</td></tr>
+        <tr><td>description</td><td>VARCHAR</td><td>Description of the ride event</td></tr>
+        <tr><td>created_at</td><td>DATETIME</td><td>Timestamp of when the event occurred</td></tr>
+    </table>
+
+    <h2>Submission</h2>
+    <ul>
+        <li>Django project source code hosted on a version control repository (e.g., GitHub).</li>
+        <li>Ensure that your commit history is clean and commits are meaningful.</li>
+        <li>Include a comprehensive README with setup instructions and implementation notes.</li>
+    </ul>
+
+    <h2>Evaluation Criteria</h2>
+    <ul>
+        <li>Functionality: Does the application perform all the defined requirements?</li>
+        <li>Code Quality: Is the code modular, readable, and maintainable?</li>
+        <li>Error Handling: Are edge cases handled within the application?</li>
+        <li>Performance: Is the API optimized to use the minimal number of SQL queries?</li>
+    </ul>
+
+    <h2>Bonus – SQL</h2>
+    <ul>
+        <li>Create a raw SQL query to count trips taking more than 1 hour from pickup to dropoff.</li>
+        <li>Group the result by Month and Driver.</li>
+    </ul>
+
+    <h3>Sample Report</h3>
+    <table>
+        <tr><th>Month</th><th>Driver</th><th>Count of Trips > 1 hr</th></tr>
+        <tr><td>2024-01</td><td>Chris H</td><td>4</td></tr>
+        <tr><td>2024-01</td><td>Howard Y</td><td>5</td></tr>
+        <tr><td>2024-01</td><td>Randy W</td><td>2</td></tr>
+        <tr><td>2024-02</td><td>Chris H</td><td>7</td></tr>
+        <tr><td>2024-02</td><td>Howard Y</td><td>5</td></tr>
+        <tr><td>2024-03</td><td>Chris H</td><td>2</td></tr>
+        <tr><td>2024-03</td><td>Howard Y</td><td>2</td></tr>
+        <tr><td>2024-03</td><td>Randy W</td><td>11</td></tr>
+        <tr><td>2024-04</td><td>Howard Y</td><td>7</td></tr>
+        <tr><td>2024-04</td><td>Randy W</td><td>3</td></tr>
+    </table>
+
+    <p>
+        A Ride_Event will be created when a driver picks up or drops off a rider. Use the pickup and dropoff RideEvent timestamps to calculate trip duration. No need to implement the RideEvent creation logic—assume it's already populated.
+    </p>
+</body>
+</html>
