@@ -144,10 +144,10 @@ You can test the API using the provided Postman collection and environment files
 
 1. Open Postman and import the following files from the `postman-collections/` folder:
 
-   - **Collection:**  
+   - **Collection:**
      `postman-collections/Wingz.postman_collection.json`
 
-   - **Environment:**  
+   - **Environment:**
      `postman-collections/Wingz.postman_environment.json`
 
 2. In Postman, select the imported environment (`Wingz`) from the top-right dropdown.
@@ -189,31 +189,46 @@ Ideally, in a real-world scenario, the distance and duration would be stored dir
 The following raw SQL query returns the number of trips that took more than 1 hour, grouped by driver and by month:
 
 ```sql
-WITH dropoff_events AS (
-    SELECT id_ride_id, MAX(created_at) AS dropoff_time
+WITH pickup_events AS (
+    SELECT
+        id_ride_id,
+        MAX(created_at) AS pickup_event_time
     FROM ride_rideevent
-    WHERE description ILIKE 'Status changed to dropoff'
+    WHERE LOWER(description) = 'status changed to pickup'
+    GROUP BY id_ride_id
+),
+dropoff_events AS (
+    SELECT
+        id_ride_id,
+        MAX(created_at) AS dropoff_event_time
+    FROM ride_rideevent
+    WHERE LOWER(description) = 'status changed to dropoff'
     GROUP BY id_ride_id
 ),
 ride_durations AS (
     SELECT
         r.id_ride,
         r.id_driver_id,
-        r.pickup_time,
-        de.dropoff_time,
-        (de.dropoff_time - r.pickup_time) AS duration
-    FROM dropoff_events de
-    JOIN ride_ride r ON r.id_ride = de.id_ride_id
-    WHERE (de.dropoff_time - r.pickup_time) > INTERVAL '1 hour'
+        pe.pickup_event_time,
+        de.dropoff_event_time,
+        (de.dropoff_event_time - pe.pickup_event_time) AS duration
+    FROM ride_ride r
+    INNER JOIN pickup_events  pe ON pe.id_ride_id  = r.id_ride
+    INNER JOIN dropoff_events de ON de.id_ride_id  = r.id_ride
+    WHERE (de.dropoff_event_time - pe.pickup_event_time) > INTERVAL '1 hour'
 )
 SELECT
-    TO_CHAR(rd.pickup_time, 'YYYY-MM') AS month,
-    uu.first_name || ' ' || uu.last_name AS driver,
-    COUNT(*) AS "Count of Trips > 1 hr"
+    TO_CHAR(rd.pickup_event_time, 'YYYY-MM')    AS month,
+    u.first_name || ' ' || u.last_name           AS driver,
+    COUNT(*)                                      AS "Count of Trips > 1 hr"
 FROM ride_durations rd
-JOIN user_user uu ON uu.id = rd.id_driver_id
-GROUP BY month, driver
-ORDER BY month, driver;
+INNER JOIN user_user u ON u.id = rd.id_driver_id
+GROUP BY
+    TO_CHAR(rd.pickup_event_time, 'YYYY-MM'),
+    u.first_name || ' ' || u.last_name
+ORDER BY
+    month,
+    driver;
 ```
 
 ## 📝 Note: The seeded data is a set of randomized test entries designed to ensure this query can be executed and return meaningful results, including trips longer than 1 hour.
@@ -226,4 +241,3 @@ ORDER BY month, driver;
 
     Authentication and Permissions:
      - Created a custom permission class IsAdminUser. Although while this was not fully enforced in the API since we are assuming only admin will be consuming it for now, this approach reflects best practices in terms of permission control.
-     

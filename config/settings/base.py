@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     # 3rd-party apps
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    'debug_toolbar', 
+    'debug_toolbar',
+    'django_filters',
 
     #local apps
     'apps.user',
