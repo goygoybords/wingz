@@ -1,6 +1,5 @@
 from rest_framework.permissions import BasePermission
-
-ADMIN_ROLE_NAME = "Admin"
+from apps.user.constants import ADMIN_ROLE_NAME
 
 class IsAdminRole(BasePermission):
     """

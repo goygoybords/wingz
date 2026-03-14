@@ -1,17 +1,26 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 from apps.user.models import User, UserType
+from apps.user.constants import ADMIN_ROLE_NAME
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-        
-        # Add user data to response
+
+        # Only Admin can access the API as per module and will check if the user is active
+        if (
+            not self.user.is_active or
+            not hasattr(self.user, 'user_type') or
+            self.user.user_type.name != ADMIN_ROLE_NAME
+        ):
+            raise AuthenticationFailed('You are not authorized to access the API.', code='authorization')
+  
         data['email'] = self.user.email
         data['user_type'] = self.user.user_type.name
         data['first_name'] = self.user.first_name
         data['last_name'] = self.user.last_name
-        
+
         return data
 
 class UserSerializer(serializers.ModelSerializer):
