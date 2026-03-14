@@ -1,19 +1,12 @@
 from rest_framework import serializers
 from apps.ride.models import Ride, RideEvent
 from apps.user.models import User
-
-
-class UserDisplaySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'first_name', 'last_name', 'email']
-
+from apps.user.serializers import UserDisplaySerializer
 
 class RideEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = RideEvent
         fields = ['id_ride_event', 'description', 'created_at']
-
 
 class RideSerializer(serializers.ModelSerializer):
     id_rider = UserDisplaySerializer(read_only=True)
