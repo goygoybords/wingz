@@ -69,6 +69,10 @@ python manage.py migrate
 python manage.py seed_usertypes
 
 python manage.py seed_admin_user
+
+python manage.py seed_riders_drivers
+
+python manage.py seed_rides
 ```
 
 7. **Run the development server**

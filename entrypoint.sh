@@ -19,6 +19,14 @@ python manage.py seed_usertypes
 echo "👤 Seeding admin user..."
 python manage.py seed_admin_user
 
+# Seed riders and drivers
+echo "👤 Seeding riders and drivers..."
+python manage.py seed_riders_drivers
+
+# Seed rides and ride events
+echo "👤 Seeding rides and ride events..."
+python manage.py seed_rides
+
 # Run the development server
 echo "🎯 Starting Django development server..."
 python manage.py runserver 0.0.0.0:8000
