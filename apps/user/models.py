@@ -3,8 +3,17 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import AbstractUser
 
 class UserType(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=20, unique=True)  # e.g., "Admin", "Rider", "Driver"
+    ADMIN = "Admin"
+    RIDER = "Rider"
+    DRIVER = "Driver"
+
+    USER_TYPE_CHOICES = [
+        (ADMIN, "Admin"),
+        (RIDER, "Rider"),
+        (DRIVER, "Driver"),
+    ]
+
+    name = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, unique=True)
 
     def __str__(self):
         return self.name
