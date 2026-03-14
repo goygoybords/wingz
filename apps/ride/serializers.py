@@ -16,17 +16,17 @@ class RideSerializer(serializers.ModelSerializer):
     id_driver = UserDisplaySerializer(read_only=True)
 
     id_rider_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.filter(user_type__name='Rider'),
+        queryset=User.objects.none(),
         source='id_rider',
         write_only=True
     )
     id_driver_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.filter(user_type__name='Driver'),
+        queryset=User.objects.none(),
         source='id_driver',
         write_only=True
     )
 
-    ride_events = RideEventSerializer(many=True, write_only=True)
+    ride_events = RideEventSerializer(many=True, write_only=True, required=False)
     todays_ride_events = serializers.SerializerMethodField()
 
     class Meta:
@@ -47,6 +47,23 @@ class RideSerializer(serializers.ModelSerializer):
             'todays_ride_events'
         ]
         read_only_fields = ['id_ride', 'id_rider', 'id_driver']
+
+    def get_fields(self):
+        fields = super().get_fields()
+        request = self.context.get('request')
+
+        # Only load the full user querysets during write operations.
+        # On GET requests the browsable API still tries to render the form —
+        # User.objects.none() prevents those 2 extra queries from firing.
+        if request and request.method in ('POST', 'PUT', 'PATCH'):
+            fields['id_rider_id'].queryset = User.objects.filter(
+                user_type__name='Rider'
+            ).select_related('user_type')
+            fields['id_driver_id'].queryset = User.objects.filter(
+                user_type__name='Driver'
+            ).select_related('user_type')
+
+        return fields
 
     def get_todays_ride_events(self, ride):
         if hasattr(ride, 'todays_events_cache'):
