@@ -38,6 +38,7 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'user.User'
 BASE_URL = env('BASE_URL')
+DEBUG = env('DEBUG')
 
 BASE_URL = env('BASE_URL')
 DEBUG = env('DEBUG')
