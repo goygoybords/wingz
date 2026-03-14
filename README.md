@@ -113,7 +113,7 @@ This will:
 - Build the Django app image
 - Start PostgreSQL 16
 - Apply DB migrations
-- Seed user types and admin user
+- Seed user types, admin user, drivers and riders, rides and ride events
 - Launch the dev server at [http://localhost:8000](http://localhost:8000)
 
 3. **Stop the containers**
@@ -217,3 +217,13 @@ ORDER BY month, driver;
 ```
 
 ## 📝 Note: The seeded data is a set of randomized test entries designed to ensure this query can be executed and return meaningful results, including trips longer than 1 hour.
+
+
+## 📊 Additional Notes
+
+    UserType Model for Role Management:
+     - To make handling user roles easier, I created a separate UserType model. In best practice it is always good to create a table for user types or roles.
+
+    Authentication and Permissions:
+     - Created a custom permission class IsAdminUser. Although while this was not fully enforced in the API since we are assuming only admin will be consuming it for now, this approach reflects best practices in terms of permission control.
+     
