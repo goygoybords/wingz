@@ -19,20 +19,21 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsAdminRole]
 
     def create(self, request, *args, **kwargs):
-        super().create(request, *args, **kwargs)
-        return Response({"message": "User created successfully."}, status=status.HTTP_201_CREATED)
+        response = super().create(request, *args, **kwargs)
+        return Response({"message": "User created successfully."}, status=response.status_code)
 
     def update(self, request, *args, **kwargs):
-        super().update(request, *args, **kwargs)
-        return Response({"message": "User updated successfully."}, status=status.HTTP_200_OK)
+        response = super().update(request, *args, **kwargs)
+        return Response({"message": "User updated successfully."}, status=response.status_code)
 
     def partial_update(self, request, *args, **kwargs):
-        super().partial_update(request, *args, **kwargs)
-        return Response({"message": "User partially updated successfully."}, status=status.HTTP_200_OK)
+        response = super().partial_update(request, *args, **kwargs)
+        return Response({"message": "User partially updated successfully."}, status=response.status_code)
 
     def destroy(self, request, *args, **kwargs):
-        super().destroy(request, *args, **kwargs)
-        return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        response = super().destroy(request, *args, **kwargs)
+        return Response({"message": "User deleted successfully."}, status=response.status_code)
+
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
