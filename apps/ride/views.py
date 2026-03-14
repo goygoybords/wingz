@@ -2,6 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import OrderingFilter
+from rest_framework.exceptions import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import FloatField, Prefetch
 from django.db.models.expressions import RawSQL
@@ -21,42 +22,90 @@ class RideViewSet(viewsets.ModelViewSet):
     filterset_class = RideFilter
     ordering = ['pickup_time']
 
-    def get_ordering_fields(self):
+    # Static fields always available for ordering.
+    # distance_to_pickup is conditionally added in get_queryset —
+    # we declare it here so OrderingFilter accepts it as a valid field.
+    ordering_fields = ['pickup_time', 'distance_to_pickup']
+
+    def _get_validated_coords(self):
+        """
+        Extracts and validates lat/lng from query params.
+        Returns (lat, lng) as floats, or (None, None) if not provided.
+        Raises ValidationError on malformed input.
+        """
         lat = self.request.query_params.get('lat')
         lng = self.request.query_params.get('lng')
-        fields = ['pickup_time']
-        if lat and lng:
-            fields.append('distance_to_pickup')
-        return fields
+
+        if not lat and not lng:
+            return None, None
+
+        # Treat partial input (only lat OR lng) as a client error
+        if bool(lat) ^ bool(lng):
+            raise ValidationError({
+                "detail": "Both 'lat' and 'lng' must be provided together."
+            })
+
+        try:
+            lat = float(lat)
+            lng = float(lng)
+        except (TypeError, ValueError):
+            raise ValidationError({
+                "detail": "'lat' and 'lng' must be valid floating point numbers."
+            })
+
+        if not (-90 <= lat <= 90):
+            raise ValidationError({"lat": "Latitude must be between -90 and 90."})
+
+        if not (-180 <= lng <= 180):
+            raise ValidationError({"lng": "Longitude must be between -180 and 180."})
+
+        return lat, lng
 
     def get_queryset(self):
         """
-        Dynamically builds the Ride queryset with related users, ride events (24h only),
-        and optional distance-to-pickup annotation for sorting.
+        Builds the Ride queryset with:
+        - select_related for rider/driver (prevents N+1)
+        - Prefetch for last-24h RideEvents only (performance-safe on large tables)
+        - Optional Haversine distance annotation when lat/lng are provided
         """
-        queryset = Ride.objects.select_related('id_rider', 'id_driver')
-       
+        lat, lng = self._get_validated_coords()
+
         yesterday = timezone.now() - timedelta(days=1)
         recent_events = RideEvent.objects.filter(created_at__gte=yesterday)
 
-        queryset = queryset.prefetch_related(
-            Prefetch('ride_events', queryset=recent_events, to_attr='todays_events_cache')
+        queryset = (
+            Ride.objects
+            .select_related('id_rider', 'id_driver')
+            .prefetch_related(
+                Prefetch(
+                    'ride_events',
+                    queryset=recent_events,
+                    to_attr='todays_events_cache'
+                )
+            )
         )
 
-        lat = self.request.query_params.get('lat')
-        lng = self.request.query_params.get('lng')
-
-        if lat and lng:
-            raw_sql = """
+        if lat is not None and lng is not None:
+            # Haversine formula — calculates great-circle distance in km.
+            # RawSQL is used intentionally: Django ORM has no native trig
+            # support portable across SQLite/PostgreSQL for this formula.
+            # Params are passed as SQL params (not string-formatted) to
+            # prevent injection.
+            haversine_sql = """
                 6371 * acos(
-                    cos(radians(%s)) * cos(radians(pickup_latitude)) *
-                    cos(radians(pickup_longitude) - radians(%s)) +
-                    sin(radians(%s)) * sin(radians(pickup_latitude))
+                    LEAST(1.0,
+                        cos(radians(%s)) * cos(radians(pickup_latitude)) *
+                        cos(radians(pickup_longitude) - radians(%s)) +
+                        sin(radians(%s)) * sin(radians(pickup_latitude))
+                    )
                 )
             """
-            params = [lat, lng, lat]
             queryset = queryset.annotate(
-                distance_to_pickup=RawSQL(raw_sql, params, output_field=FloatField())
+                distance_to_pickup=RawSQL(
+                    haversine_sql,
+                    params=[lat, lng, lat],
+                    output_field=FloatField()
+                )
             )
 
         return queryset
