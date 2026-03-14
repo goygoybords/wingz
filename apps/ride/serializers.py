@@ -16,12 +16,12 @@ class RideSerializer(serializers.ModelSerializer):
     id_driver = UserDisplaySerializer(read_only=True)
 
     id_rider_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.filter(user_type__id=2),
+        queryset=User.objects.filter(user_type__name='Rider'),
         source='id_rider',
         write_only=True
     )
     id_driver_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.filter(user_type__id=3),
+        queryset=User.objects.filter(user_type__name='Driver'),
         source='id_driver',
         write_only=True
     )

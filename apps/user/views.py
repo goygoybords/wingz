@@ -14,21 +14,21 @@ class LoginAPIView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.select_related('user_type').all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdminRole]
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        return Response({"message": "User created successfully."}, status=response.status_code)
+        return Response({"message": "User created successfully.", "data": response.data}, status=response.status_code)
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
-        return Response({"message": "User updated successfully."}, status=response.status_code)
+        return Response({"message": "User updated successfully.", "data": response.data}, status=response.status_code)
 
     def partial_update(self, request, *args, **kwargs):
         response = super().partial_update(request, *args, **kwargs)
-        return Response({"message": "User partially updated successfully."}, status=response.status_code)
+        return Response({"message": "User partially updated successfully.", "data": response.data}, status=response.status_code)
 
     def destroy(self, request, *args, **kwargs):
         response = super().destroy(request, *args, **kwargs)

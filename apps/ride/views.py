@@ -19,8 +19,15 @@ class RideViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsAdminRole]
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = RideFilter
-    ordering_fields = ['pickup_time', 'distance_to_pickup']
     ordering = ['pickup_time']
+
+    def get_ordering_fields(self):
+        lat = self.request.query_params.get('lat')
+        lng = self.request.query_params.get('lng')
+        fields = ['pickup_time']
+        if lat and lng:
+            fields.append('distance_to_pickup')
+        return fields
 
     def get_queryset(self):
         """
@@ -56,15 +63,15 @@ class RideViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        return Response({"message": "Ride created successfully."}, status=response.status_code)
+        return Response({"message": "Ride created successfully.", "data": response.data}, status=response.status_code)
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
-        return Response({"message": "Ride updated successfully."}, status=response.status_code)
+        return Response({"message": "Ride updated successfully.", "data": response.data}, status=response.status_code)
 
     def partial_update(self, request, *args, **kwargs):
         response = super().partial_update(request, *args, **kwargs)
-        return Response({"message": "Ride partially updated successfully."}, status=response.status_code)
+        return Response({"message": "Ride partially updated successfully.", "data": response.data}, status=response.status_code)
 
     def destroy(self, request, *args, **kwargs):
         response = super().destroy(request, *args, **kwargs)
