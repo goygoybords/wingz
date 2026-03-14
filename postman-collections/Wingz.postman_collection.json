@@ -1,0 +1,815 @@
+{
+	"info": {
+		"_postman_id": "0daaedb0-3f0d-48c4-91b1-9be89598ef14",
+		"name": "Wingz",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40556667"
+	},
+	"item": [
+		{
+			"name": "User CRUD",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/user/users/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"user",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List User by primary key",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/user/users/{{user_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"user",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"Kobe\",\n  \"last_name\": \"Driver\",\n  \"email\": \"kobe.driver@example.com\",\n  \"phone_number\": \"09998887777\",\n  \"password\": \"DriverPassword123\",\n  \"user_type_id\": 3,\n  \"is_active\": true\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/user/users/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"user",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"Ryan Update\",\n  \"last_name\": \"Rider Update\",\n  \"email\": \"ryan.rider@example.com\",\n  \"phone_number\": \"09998887777\",\n  \"password\": \"RiderPass123@!\",\n  \"user_type_id\": 2,\n  \"is_active\": true\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/user/users/2/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"user",
+								"users",
+								"2",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/user/users/2/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"user",
+								"users",
+								"2",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ride and Ride Event",
+			"item": [
+				{
+					"name": "List Rides",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": "\n",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/ride/rides/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ride",
+								"rides",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Rides Pagination",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/ride/rides/?page={{page_number}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ride",
+								"rides",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "{{page_number}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Rides with status filter",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/ride/rides/?status={{status}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ride",
+								"rides",
+								""
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "{{status}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Rides with rider email filter",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/ride/rides/?rider_email={{rider_email}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ride",
+								"rides",
+								""
+							],
+							"query": [
+								{
+									"key": "rider_email",
+									"value": "{{rider_email}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Rides with Status and Rider Email filter",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/ride/rides/?status={{status}}&rider_email={{rider_email}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ride",
+								"rides",
+								""
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "{{status}}"
+								},
+								{
+									"key": "rider_email",
+									"value": "{{rider_email}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Ride with Ride Event",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"pickup\",\n  \"pickup_latitude\": 14.5995,\n  \"pickup_longitude\": 120.9842,\n  \"dropoff_latitude\": 14.6091,\n  \"dropoff_longitude\": 121.0223,\n  \"pickup_time\": \"2025-04-14T09:30:00Z\",\n  \"id_rider_id\": 3,\n  \"id_driver_id\": 4,\n  \"ride_events\": [\n    { \"description\": \"Ride created\" },\n    { \"description\": \"Driver en route\" }\n  ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/ride/rides/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ride",
+								"rides",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Ride and Ride Event",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"dropoff\",\n  \"pickup_latitude\": 14.61,\n  \"pickup_longitude\": 121.01,\n  \"dropoff_latitude\": 14.62,\n  \"dropoff_longitude\": 121.02,\n  \"pickup_time\": \"2025-04-15T09:00:00Z\",\n  \"id_rider_id\": 8,\n  \"id_driver_id\": 7,\n  \"ride_events\": [\n    { \"description\": \"Ride updated by admin\" },\n    { \"description\": \"New route assigned\" }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/ride/rides/{{ride_id}}/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ride",
+								"rides",
+								"{{ride_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Update Ride",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"dropoff\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/ride/rides/1/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ride",
+								"rides",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Rides Sorting with lat, long and distance to pickup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Results are sorted by distance_to_pickup\", function () {",
+									"    const results = pm.response.json().results;",
+									"    if (results.length > 1) {",
+									"        const distances = results.map(r => r.distance_to_pickup);",
+									"        const sorted = [...distances].sort((a, b) => a - b);",
+									"        pm.expect(distances).to.eql(sorted);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/ride/rides/?lat=14.599812630825024&lng=120.9884156756386&ordering={{sorting_option}}\n",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ride",
+								"rides",
+								""
+							],
+							"query": [
+								{
+									"key": "lat",
+									"value": "14.599812630825024"
+								},
+								{
+									"key": "lng",
+									"value": "120.9884156756386"
+								},
+								{
+									"key": "ordering",
+									"value": "{{sorting_option}}\n"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Rides with Sorting by pickup time",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/ride/rides/?ordering=pickup_time",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ride",
+								"rides",
+								""
+							],
+							"query": [
+								{
+									"key": "ordering",
+									"value": "pickup_time"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Ride with most filters",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8000/api/ride/rides/?lat=14.60&lng=121.00&ordering=distance_to_pickup&page=2&status=pickup",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ride",
+								"rides",
+								""
+							],
+							"query": [
+								{
+									"key": "lat",
+									"value": "14.60"
+								},
+								{
+									"key": "lng",
+									"value": "121.00"
+								},
+								{
+									"key": "ordering",
+									"value": "distance_to_pickup"
+								},
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "status",
+									"value": "pickup"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200)",
+									"{",
+									"    try",
+									"    {",
+									"        const jsonData = pm.response.json();",
+									"",
+									"        // Prepend 'Bearer ' to the access token",
+									"        const bearerToken = `Bearer ${jsonData.access}`;",
+									"",
+									"        // Save tokens to environment",
+									"        pm.environment.set(\"access_token\", bearerToken);",
+									"        pm.environment.set(\"refresh_token\", jsonData.refresh);",
+									"    }",
+									"    catch (error)",
+									"    {",
+									"        console.error(\"Failed to parse token from response:\", error);",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"kevin@test.com\",\n  \"password\": \"Admin123@!\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/user/login/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"user",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"access_token\", \"\");",
+									"pm.environment.set(\"refresh_token\", \"\");",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/user/logout/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"user",
+								"logout",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

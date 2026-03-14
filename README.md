@@ -128,4 +128,26 @@ docker compose down -v
 
 ## Testing
 
-_TBD — Add your Django test runner or pytest instructions here._
+You can test the API using the provided Postman collection and environment files.
+
+### 🧪 Requirements
+
+- [Download and install Postman](https://www.postman.com/downloads/)
+
+---
+
+### 📬 Postman Setup
+
+1. Open Postman and import the following files from the `postman-collections/` folder:
+
+   - **Collection:**  
+     `postman-collections/Wingz.postman_collection.json`
+
+   - **Environment:**  
+     `postman-collections/Wingz.postman_environment.json`
+
+2. In Postman, select the imported environment (`Wingz`) from the top-right dropdown.
+
+3. Use the **Login** request to authenticate. It will automatically save the JWT access and refresh tokens as environment variables.
+
+4. All authorized requests (e.g., User, Ride, RideEvent APIs) will use the saved `{{access_token}}` for the `Authorization` header.
